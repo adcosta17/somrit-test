@@ -1,12 +1,6 @@
 
 # Delete sequence to simulate somatic insertions
 
-def get_sample(wildcards):
-    return config["full_sample"]
-
-def get_fastq(wildcards):
-    return config["fastq"]
-
 def get_ref(wildcards):
     return config["reference"]
 

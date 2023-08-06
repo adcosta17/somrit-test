@@ -56,8 +56,6 @@ rule all_sniffles_cutesv_somrit_xtea_tldr:
         expand("CuteSV_Realigned_HG{s}_{f}_{r}/Realigned_HG{s}_{f}_{r}.vcf", f=config["fractions"], r=config["replicates"],s=config["samples"]),
         expand("Realigned_classified_filtered_HG{s}_{f}_{r}.tsv", f=config["fractions"], r=config["replicates"],s=config["samples"]),
         expand("HG{s}_{f}_{r}/classified_results.txt.Combined.txt", f=config["fractions"], r=config["replicates"],s=config["samples"]),
-        expand("Realigned_HG{s}_{f}_{r}/classified_results.txt.Combined.txt", f=config["fractions"], r=config["replicates"],s=config["samples"]),
-        expand("tldr_Realigned_HG{s}_{f}_{r}/Realigned_HG{s}_{f}_{r}.table.txt", f=config["fractions"], r=config["replicates"],s=config["samples"]),
         expand("tldr_HG{s}_{f}_{r}/HG{s}_{f}_{r}.table.txt", f=config["fractions"], r=config["replicates"],s=config["samples"])
 
 rule all_somrit_xtea_tldr:
@@ -117,7 +115,7 @@ rule all_fastq:
 rule all_somrit_metrics:
     input:
         expand("Somrit_xtea_tldr_before_after_HG{s}_{f}_{r}.txt",f=config["fractions"], r=config["replicates"],s=config["samples"]),
-        #expand("Time_Mem_HG{s}_{f}_{r}.txt",f=config["fractions"], r=config["replicates"],s=config["samples"])
+        expand("Time_Mem_HG{s}_{f}_{r}.txt",f=config["fractions"], r=config["replicates"],s=config["samples"])
 
 include: "rules/data.smk"
 include: "rules/somrit.smk"
