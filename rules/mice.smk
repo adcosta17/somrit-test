@@ -4,10 +4,6 @@
 def get_sample(wildcards):
     return config["full_sample"]
 
-def get_assembly(wildcards):
-    sample = get_sample(wildcards)
-    return config["assembly_folder"]+"/"+sample+"/assembly/"+sample+"."+wildcards.hap+".fa"
-
 def get_fastq(wildcards):
     return config["fastq"]
 
@@ -29,22 +25,8 @@ def get_centromeres(wildcards):
 def get_telomeres(wildcards):
     return config["telomeres"]
 
-def get_maternal(wildcards):
-    sample = get_sample(wildcards)
-    return config["assembly_folder"]+"/"+sample+"/assembly/"+sample+".mat.fa"
-
-def get_paternal(wildcards):
-    sample = get_sample(wildcards)
-    return config["assembly_folder"]+"/"+sample+"/assembly/"+sample+".pat.fa"
-
 def get_chrom_list(wildcards):
     return "chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX,chrY"
-
-def get_chrom_lengths(wildcards):
-    return config["chrom_lengths"]
-
-def get_pbsim_model(wildcards):
-    return config["pbsim_model"]
 
 def get_tsv_list(wildcards):
     tsv_list = ""

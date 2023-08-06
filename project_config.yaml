@@ -25,23 +25,26 @@ chroms:
   - chrY
 
 fractions:
-  - 0.03
-  - 0.06
-  - 0.09
-  - 0.12
-  - 0.15
-  - 0.18
-  - 0.21
-  - 0.24
-  - 0.27
-  - 0.3
+  - 0.03*sample_coverage
+  - 0.06*sample_coverage
+  - 0.09*sample_coverage
+  - 0.12*sample_coverage
+  - 0.15*sample_coverage
+  - 0.18*sample_coverage
+  - 0.21*sample_coverage
+  - 0.24*sample_coverage
+  - 0.27*sample_coverage
+  - 0.30*sample_coverage
+  - 0.33*sample_coverage
 
+# 3 replicates for Polymorphic, 12 for simulation
 replicates:
   - 1
   - 2
   - 3
-  - 4
-  - 5
+
+coverage:
+  - sample_coverage
 
 fastq:
   /path/to/input/fastq.gz
@@ -69,3 +72,30 @@ centromeres:
 
 telomeres:
   /utils/hg38_telomeres.tsv
+
+full_sample:
+  sample_name
+
+mat_fa:
+  /path/to/maternal_assembly.fa
+
+pat_fa:
+  /path/to/paternal_assembly.fa
+
+mat_rm:
+  /path/to/maternal_repeatmasker.txt
+
+pat_rm:
+  /path/to/paternal_repeatmasker.txt
+
+# Required for simulation and nested runs
+
+# Assemblies stored in assembly folder should be in subfolder form of "sample_name/assembly/sample_name.[mat|pat].fa"
+assembly_folder:
+  /path/to/mat/and/pat/assemblies
+
+pbsim_model:
+  /path/to/pbsim/model/file
+
+chrom_lengths:
+  /utils/GRCh38_chromosome_sizes.tsv

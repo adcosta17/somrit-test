@@ -4,10 +4,6 @@
 def get_sample(wildcards):
     return config["full_sample"]
 
-def get_assembly(wildcards):
-    sample = get_sample(wildcards)
-    return config["assembly_folder"]+"/"+sample+"/assembly/"+sample+"."+wildcards.hap+".fa"
-
 def get_fastq(wildcards):
     return config["fastq"]
 
@@ -29,22 +25,8 @@ def get_centromeres(wildcards):
 def get_telomeres(wildcards):
     return config["telomeres"]
 
-def get_maternal(wildcards):
-    sample = get_sample(wildcards)
-    return config["assembly_folder"]+"/"+sample+"/assembly/"+sample+".mat.fa"
-
-def get_paternal(wildcards):
-    sample = get_sample(wildcards)
-    return config["assembly_folder"]+"/"+sample+"/assembly/"+sample+".pat.fa"
-
 def get_chrom_list(wildcards):
     return "chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX,chrY"
-
-def get_chrom_lengths(wildcards):
-    return config["chrom_lengths"]
-
-def get_pbsim_model(wildcards):
-    return config["pbsim_model"]
 
 def get_tsv_list(wildcards):
     tsv_list = ""
@@ -268,29 +250,3 @@ rule filter_inserts:
 
 
 
-#rule summarize_data:
-#    input:
-#        realign_tsv="{sample}/Realigned_classified_filtered_{sample}.tsv",
-#        tldr_table="{sample}/tldr_{sample}./{sample}.table.txt",
-#    output:
-#        tsv="simulation_results_{sample}.txt",
-#        tsv_500="simulation_results_500_{sample}.txt",
-#        tsv_2000="simulation_results_2000_{sample}.txt",
-#        tsv_6000="simulation_results_6000_{sample}.txt",
-#        tsv_LINE="simulation_results_LINE_{sample}.txt",
-#        tsv_Alu="simulation_results_Alu_{sample}.txt",
-#        tsv_SVA="simulation_results_SVA_{sample}.txt"
-#    threads: 1
-#    params:
-#        memory_per_thread="64G",
-#        somrit_test_script = srcdir("../scripts/get_simulation_metrics.py")
-#    shell:
-#        """
-        #python {params.somrit_test_script} --inserts-tsv {input.inserts_tsv} --spiked-reads {input.spike_in_reads} --tldr {input.tldr_table} --xtea {input.xtea_table} --somrit {input.realign_tsv} --sniffles {input.sniffles_vcf} --rep {wildcards.rep} > {output.tsv}
-        #python {params.somrit_test_script} --inserts-tsv {input.inserts_tsv} --spiked-reads {input.spike_in_reads} --tldr {input.tldr_table} --xtea {input.xtea_table} --somrit {input.realign_tsv} --sniffles {input.sniffles_vcf} --rep {wildcards.rep} --max-size 500 > {output.tsv_500}
-        #python {params.somrit_test_script} --inserts-tsv {input.inserts_tsv} --spiked-reads {input.spike_in_reads} --tldr {input.tldr_table} --xtea {input.xtea_table} --somrit {input.realign_tsv} --sniffles {input.sniffles_vcf} --rep {wildcards.rep} --min-size 500 --max-size 2000 > {output.tsv_2000}
-        #python {params.somrit_test_script} --inserts-tsv {input.inserts_tsv} --spiked-reads {input.spike_in_reads} --tldr {input.tldr_table} --xtea {input.xtea_table} --somrit {input.realign_tsv} --sniffles {input.sniffles_vcf} --rep {wildcards.rep} --min-size 2000 > {output.tsv_6000}
-        #python {params.somrit_test_script} --inserts-tsv {input.inserts_tsv} --spiked-reads {input.spike_in_reads} --tldr {input.tldr_table} --xtea {input.xtea_table} --somrit {input.realign_tsv} --sniffles {input.sniffles_vcf} --rep {wildcards.rep} --family LINE > {output.tsv_LINE}
-        #python {params.somrit_test_script} --inserts-tsv {input.inserts_tsv} --spiked-reads {input.spike_in_reads} --tldr {input.tldr_table} --xtea {input.xtea_table} --somrit {input.realign_tsv} --sniffles {input.sniffles_vcf} --rep {wildcards.rep} --family Alu > {output.tsv_Alu}
-        #python {params.somrit_test_script} --inserts-tsv {input.inserts_tsv} --spiked-reads {input.spike_in_reads} --tldr {input.tldr_table} --xtea {input.xtea_table} --somrit {input.realign_tsv} --sniffles {input.sniffles_vcf} --rep {wildcards.rep} --family SVA > {output.tsv_SVA}
-#        """

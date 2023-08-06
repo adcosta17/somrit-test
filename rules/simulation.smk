@@ -4,10 +4,6 @@
 def get_sample(wildcards):
     return "HG00"+wildcards.sample
 
-def get_assembly(wildcards):
-    sample = get_sample(wildcards)
-    return config["assembly_folder"]+"/"+sample+"/assembly/"+sample+"."+wildcards.hap+".fa"
-
 def get_fastq(wildcards):
     return config["fastq"]
 
