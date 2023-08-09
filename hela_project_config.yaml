@@ -47,7 +47,7 @@ somrit_dir:
   /path/to/somrit/
 
 repbase:
-  /path/to/somrit/repeats.fa
+  /utils/L1_EF1alpha-mCherry_spliced.fa
 
 centromeres:
   /utils/hg38_centromeres.tsv
@@ -55,20 +55,6 @@ centromeres:
 telomeres:
   /utils/hg38_telomeres.tsv
 
-full_sample:
-  sample_name
-
-mat_fa:
-  /path/to/maternal_assembly.fa
-
-pat_fa:
-  /path/to/paternal_assembly.fa
-
-mat_rm:
-  /path/to/maternal_repeatmasker.txt
-
-pat_rm:
-  /path/to/paternal_repeatmasker.txt
 
 # Required for simulation and nested runs
 
