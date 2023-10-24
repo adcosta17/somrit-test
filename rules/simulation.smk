@@ -169,7 +169,7 @@ rule zip_fastq:
     input:
         "{prefix}.fastq"
     output:
-        "{prefix}.fastq.gz"
+        temp("{prefix}.fastq.gz")
     params:
         memory_per_thread="16G"
     threads: 1
@@ -267,7 +267,7 @@ rule tldr_spikein:
     shell:
         """
         cd HG{wildcards.sample}/tldr_HG{wildcards.sample}.spike_in.{wildcards.rep}
-        {config[tldr_dir]}/tldr/tldr -b ../../{input.bam} -r {params.ref} -e {config[tldr_dir]}/ref/teref.ont.human.fa -m 1 -p {threads} --flanksize 1000
+        {config[tldr_dir]}/tldr/tldr -b ../../{input.bam} -r {params.ref} -e {config[tldr_dir]}/ref/teref.ont.human.fa -m 1 -p {threads} --flanksize 1000 --min_te_len 100
         """
 
 
@@ -388,11 +388,31 @@ rule filter_inserts_spikein:
         """
 
 
+rule tldr_realign_spikein:
+    input:
+        bam="HG{sample}/Realigned_HG{sample}.spike_in.{rep}.bam",
+        bai="HG{sample}/Realigned_HG{sample}.spike_in.{rep}.bam.bai",
+    output:
+        tsv="HG{sample}/Realign_tldr_HG{sample}.spike_in.{rep}/Realigned_HG{sample}.spike_in.{rep}.table.txt"
+    threads: 10
+    benchmark:
+        "benchmark/tldr/Realign_HG{sample}.spike_in.{rep}.txt"
+    params:
+        memory_per_thread="20G",
+        ref=get_ref
+    shell:
+        """
+        cd HG{wildcards.sample}/Realign_tldr_HG{wildcards.sample}.spike_in.{wildcards.rep}
+        {config[tldr_dir]}/tldr/tldr -b ../../{input.bam} -r {params.ref} -e {config[tldr_dir]}/ref/teref.ont.human.fa -m 1 -p {threads} --flanksize 1000 --min_te_len 100
+        """
+
+
 
 rule summarize_data_spikein:
     input:
         realign_tsv="HG{sample}/Realigned_classified_filtered_HG{sample}.spike_in.{rep}.tsv",
         tldr_table="HG{sample}/tldr_HG{sample}.spike_in.{rep}/HG{sample}.spike_in.{rep}.table.txt",
+        realign_tldr_table="HG{sample}/Realign_tldr_HG{sample}.spike_in.{rep}/Realigned_HG{sample}.spike_in.{rep}.table.txt",
         sniffles_vcf="HG{sample}/Sniffles_HG{sample}.spike_in.{rep}/HG{sample}.spike_in.{rep}.vcf",
         xtea_table="HG{sample}/HG{sample}.spike_in.{rep}/HG{sample}.spike_in.{rep}/classified_results.txt.Combined.txt",
         inserts_tsv="HG{sample}/HG{sample}.insert_added_sequences.tsv",
@@ -414,12 +434,12 @@ rule summarize_data_spikein:
         xtea_folder="HG{sample}/HG{sample}.spike_in.{rep}/HG{sample}.spike_in.{rep}/classified_results.txt"
     shell:
         """
-        python {params.somrit_test_script} --inserts-tsv {input.inserts_tsv} --spiked-reads {input.spike_in_reads} --tldr {input.tldr_table} --xtea {params.xtea_folder} --somrit {input.realign_tsv} --sniffles {input.sniffles_vcf} --rep {wildcards.rep} > {output.tsv}
-        python {params.somrit_test_script} --inserts-tsv {input.inserts_tsv} --spiked-reads {input.spike_in_reads} --tldr {input.tldr_table} --xtea {params.xtea_folder} --somrit {input.realign_tsv} --sniffles {input.sniffles_vcf} --rep {wildcards.rep} --max-size 500 > {output.tsv_500}
-        python {params.somrit_test_script} --inserts-tsv {input.inserts_tsv} --spiked-reads {input.spike_in_reads} --tldr {input.tldr_table} --xtea {params.xtea_folder} --somrit {input.realign_tsv} --sniffles {input.sniffles_vcf} --rep {wildcards.rep} --min-size 500 --max-size 2000 > {output.tsv_2000}
-        python {params.somrit_test_script} --inserts-tsv {input.inserts_tsv} --spiked-reads {input.spike_in_reads} --tldr {input.tldr_table} --xtea {params.xtea_folder} --somrit {input.realign_tsv} --sniffles {input.sniffles_vcf} --rep {wildcards.rep} --min-size 2000 > {output.tsv_6000}
-        python {params.somrit_test_script} --inserts-tsv {input.inserts_tsv} --spiked-reads {input.spike_in_reads} --tldr {input.tldr_table} --xtea {params.xtea_folder} --somrit {input.realign_tsv} --sniffles {input.sniffles_vcf} --rep {wildcards.rep} --family LINE > {output.tsv_LINE}
-        python {params.somrit_test_script} --inserts-tsv {input.inserts_tsv} --spiked-reads {input.spike_in_reads} --tldr {input.tldr_table} --xtea {params.xtea_folder} --somrit {input.realign_tsv} --sniffles {input.sniffles_vcf} --rep {wildcards.rep} --family Alu > {output.tsv_Alu}
-        python {params.somrit_test_script} --inserts-tsv {input.inserts_tsv} --spiked-reads {input.spike_in_reads} --tldr {input.tldr_table} --xtea {params.xtea_folder} --somrit {input.realign_tsv} --sniffles {input.sniffles_vcf} --rep {wildcards.rep} --family SVA > {output.tsv_SVA}
+        python {params.somrit_test_script} --inserts-tsv {input.inserts_tsv} --spiked-reads {input.spike_in_reads} --tldr {input.tldr_table} --xtea {params.xtea_folder} --tldr-realign {input.realign_tldr_table} --somrit {input.realign_tsv} --sniffles {input.sniffles_vcf} --rep {wildcards.rep} > {output.tsv}
+        python {params.somrit_test_script} --inserts-tsv {input.inserts_tsv} --spiked-reads {input.spike_in_reads} --tldr {input.tldr_table} --xtea {params.xtea_folder} --tldr-realign {input.realign_tldr_table} --somrit {input.realign_tsv} --sniffles {input.sniffles_vcf} --rep {wildcards.rep} --max-size 500 > {output.tsv_500}
+        python {params.somrit_test_script} --inserts-tsv {input.inserts_tsv} --spiked-reads {input.spike_in_reads} --tldr {input.tldr_table} --xtea {params.xtea_folder} --tldr-realign {input.realign_tldr_table} --somrit {input.realign_tsv} --sniffles {input.sniffles_vcf} --rep {wildcards.rep} --min-size 500 --max-size 2000 > {output.tsv_2000}
+        python {params.somrit_test_script} --inserts-tsv {input.inserts_tsv} --spiked-reads {input.spike_in_reads} --tldr {input.tldr_table} --xtea {params.xtea_folder} --tldr-realign {input.realign_tldr_table} --somrit {input.realign_tsv} --sniffles {input.sniffles_vcf} --rep {wildcards.rep} --min-size 2000 > {output.tsv_6000}
+        python {params.somrit_test_script} --inserts-tsv {input.inserts_tsv} --spiked-reads {input.spike_in_reads} --tldr {input.tldr_table} --xtea {params.xtea_folder} --tldr-realign {input.realign_tldr_table} --somrit {input.realign_tsv} --sniffles {input.sniffles_vcf} --rep {wildcards.rep} --family LINE > {output.tsv_LINE}
+        python {params.somrit_test_script} --inserts-tsv {input.inserts_tsv} --spiked-reads {input.spike_in_reads} --tldr {input.tldr_table} --xtea {params.xtea_folder} --tldr-realign {input.realign_tldr_table} --somrit {input.realign_tsv} --sniffles {input.sniffles_vcf} --rep {wildcards.rep} --family Alu > {output.tsv_Alu}
+        python {params.somrit_test_script} --inserts-tsv {input.inserts_tsv} --spiked-reads {input.spike_in_reads} --tldr {input.tldr_table} --xtea {params.xtea_folder} --tldr-realign {input.realign_tldr_table} --somrit {input.realign_tsv} --sniffles {input.sniffles_vcf} --rep {wildcards.rep} --family SVA > {output.tsv_SVA}
         python {params.benchmark_script} --rep {wildcards.rep} --sample {wildcards.sample} > {output.benchmark}
         """

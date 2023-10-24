@@ -12,7 +12,7 @@ from statistics import mean
 
 
 parser = argparse.ArgumentParser( description='Get metrics for xtea and tldr before and after runs')
-parser.add_argument('--fraction', type=float, required=True)
+parser.add_argument('--fraction', type=int, required=True)
 parser.add_argument('--rep', type=int, required=True)
 parser.add_argument('--sample', type=int, required=True)
 parser.add_argument('--chroms', default="chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX,chrY")
@@ -21,28 +21,28 @@ args = parser.parse_args()
 
 cutesv_before_mem = 0
 cutesv_before_time = 0
-with open("benchmark/cutesv/HG"+str(args.sample)+"_"+str(args.fraction)+"_"+str(args.rep)+".txt", 'r') as in_file:
-    count = 0
-    for line in in_file:
-        if count == 0:
-            count = 1
-            continue
-        row = line.split("\t")
-        cutesv_before_time = row[0]
-        cutesv_before_mem = row[2]
+#with open("benchmark/cutesv/HG"+str(args.sample)+"_"+str(args.fraction)+"_"+str(args.rep)+".txt", 'r') as in_file:
+#    count = 0
+#    for line in in_file:
+#        if count == 0:
+#            count = 1
+#            continue
+#        row = line.split("\t")
+#        cutesv_before_time = row[0]
+#        cutesv_before_mem = row[2]
 
 
 sniffles_before_mem = 0
 sniffles_before_time = 0
-with open("benchmark/sniffles/HG"+str(args.sample)+"_"+str(args.fraction)+"_"+str(args.rep)+".txt", 'r') as in_file:
-    count = 0
-    for line in in_file:
-        if count == 0:
-            count = 1
-            continue
-        row = line.split("\t")
-        sniffles_before_time = row[0]
-        sniffles_before_mem = row[2]
+#with open("benchmark/sniffles/HG"+str(args.sample)+"_"+str(args.fraction)+"_"+str(args.rep)+".txt", 'r') as in_file:
+#    count = 0
+#    for line in in_file:
+#        if count == 0:
+#            count = 1
+#            continue
+#        row = line.split("\t")
+#        sniffles_before_time = row[0]
+#        sniffles_before_mem = row[2]
 
 
 xtea_before_mem = 0

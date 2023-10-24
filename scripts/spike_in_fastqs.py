@@ -6,6 +6,7 @@ from collections import defaultdict
 import gzip
 import re
 import random
+import numpy as np
 
 def get_name(n):
     tmp = hex(n)[2:].zfill(32)
@@ -25,13 +26,14 @@ parser.add_argument('--max-reads', type=int, default=4)
 args = parser.parse_args()
 
 random.seed(args.rep)
+np.random.seed(args.rep)
 insert_dict = defaultdict(list)
 max_count = 0
 
 with pysam.FastaFile(args.inserts) as fh, open(args.output_fastq, 'w') as fout, pysam.FastxFile(args.mat) as mat_fq, pysam.FastxFile(args.pat) as pat_fq, open(args.tsv, 'r') as in_tsv:
     for line in in_tsv:
         row = line.strip().split("\t")
-        insert_dict[row[0]].append(row[2])
+        insert_dict[int(row[0])].append(row[2])
         max_count = max(max_count, int(row[3]))
     max_count += 1
     for entry in mat_fq:
@@ -51,19 +53,18 @@ with pysam.FastaFile(args.inserts) as fh, open(args.output_fastq, 'w') as fout, 
     if args.rep > 0:
         # 0 is a base case, don't add any insertions for 0 only otherwise 
         # Now randomly select insertions to insert
-        for pos in insert_dict:
-            n = random.random()
-            if n < args.position_fraction:
-                # Use this position, select n reads
-                max_reads = min(len(insert_dict[pos]), args.max_reads)
-                reads = random.sample(insert_dict[pos], random.randint(1,max_reads))
-                for read in reads:
-                    seq = fh.fetch(read)
-                    fout.write("@"+read+"\n")
-                    fout.write(seq+"\n")
-                    fout.write("+\n")
-                    fout.write("="*len(seq)+"\n")
-                    print(pos+"\t"+read)
+        positions_to_use = np.random.choice(range(args.position_number),int(args.position_number*args.position_fraction))
+        for pos in positions_to_use:
+            # Use this position, select n reads
+            max_reads = min(len(insert_dict[pos]), args.max_reads)
+            reads = random.sample(insert_dict[pos], random.randint(1,max_reads))
+            for read in reads:
+                seq = fh.fetch(read)
+                fout.write("@"+read+"\n")
+                fout.write(seq+"\n")
+                fout.write("+\n")
+                fout.write("="*len(seq)+"\n")
+                print(str(pos)+"\t"+read)
 
 
 

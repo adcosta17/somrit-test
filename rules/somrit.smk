@@ -75,9 +75,10 @@ rule realign_inserts:
 rule merge_realign_inserts:
     input:
         cbams = expand("{chrom}.Realigned_HG{{sample}}_{{frac}}_{{rep}}.bam",chrom=config["chroms"]),
-        tsv = expand("{chrom}.Realigned_HG{{sample}}_{{frac}}_{{rep}}.tsv",chrom=config["chroms"])
+        tsv = expand("{chrom}.Realigned_HG{{sample}}_{{frac}}_{{rep}}.tsv",chrom=config["chroms"]),
+        bam="HG{sample}_{frac}_{rep}.bam"
     output:
-        bam="Realigned_HG{sample}_{frac}_{rep}.bam",
+        bam=temp("Realigned_HG{sample}_{frac}_{rep}.bam"),
         tsv="Realigned_HG{sample}_{frac}_{rep}.tsv"
     threads: 1
     log:
@@ -124,7 +125,8 @@ rule classify_inserts:
 
 rule filter_inserts:
     input:
-        tsv="Realigned_classified_HG{sample}_{frac}_{rep}.tsv"
+        tsv="Realigned_classified_HG{sample}_{frac}_{rep}.tsv",
+        fastq="HG{sample}_{frac}_{rep}.fastq.bgz"
     output:
         tsv="Realigned_classified_filtered_HG{sample}_{frac}_{rep}.tsv"
     threads: 10

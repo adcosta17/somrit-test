@@ -29,10 +29,12 @@ def get_maternal_rm(wildcards):
 def get_paternal_rm(wildcards):
     return config["pat_rm"]
 
+def get_fraction(wildcards):
+    return float(int(wildcards.frac)/int(config["coverage"]))
 
 rule sample_fastqs:
     output:
-        fastq="HG{sample}_{frac}_{rep}.fastq.bgz"
+        fastq=temp("HG{sample}_{frac}_{rep}.fastq.bgz")
     threads: 1
     log:
         "logs/fastq/HG{sample}_{frac}_{rep}.log"
@@ -40,17 +42,18 @@ rule sample_fastqs:
         "benchmark/fastq/HG{sample}_{frac}_{rep}.txt"
     params:
         memory_per_thread="24G",
-        fastq=get_fastq
+        fastq=get_fastq,
+        fraction=get_fraction
     shell:
         """
-        seqtk sample -s {wildcards.rep} {params.fastq} {wildcards.frac} | bgzip -c > {output.fastq} 2> {log}
+        seqtk sample -s {wildcards.rep} {params.fastq} {params.fraction} | bgzip -c > {output.fastq} 2> {log}
         """
 
 rule map_fastqs:
     input:
         fastq="HG{sample}_{frac}_{rep}.fastq.bgz"
     output:
-        bam="HG{sample}_{frac}_{rep}.bam"
+        bam=temp("HG{sample}_{frac}_{rep}.bam")
     threads: 10
     log:
         "logs/minimap2/HG{sample}_{frac}_{rep}.log"
@@ -276,7 +279,7 @@ rule summarize_somrit:
         xtea_before_txt="HG{sample}_{frac}_{rep}/classified_results.txt",
         somrit_test_script = srcdir("../scripts/get_xtea_tldr_somrit_metrics.py"),
         tsv="Realigned_classified_filtered_HG{sample}_{frac}_{rep}.tsv",
-        tldr_before_txt="HG{sample}_{frac}_{rep}.table.txt",
+        tldr_before_txt="tldr_HG{sample}_{frac}_{rep}/HG{sample}_{frac}_{rep}.table.txt",
     shell:
         """
         python {params.somrit_test_script} --truth {input} --tldr-before {params.tldr_before_txt} --xtea-before {params.xtea_before_txt} --somrit {params.tsv} --fraction {wildcards.frac} --rep {wildcards.rep} --out-all {output.somrit_before_after_all} --out-rt {output.somrit_before_after}

@@ -12,6 +12,9 @@ def get_fastq(wildcards):
     return config["fastq"]
 
 rule xtea_before:
+    input:
+        bam="HG{sample}_{frac}_{rep}.bam",
+        bai="HG{sample}_{frac}_{rep}.bam.bai"
     output:
         tsv="HG{sample}_{frac}_{rep}/classified_results.txt.Combined.txt"
     threads: 10

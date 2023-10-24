@@ -236,7 +236,7 @@ def get_tldr_stats_rt(file, truth_dict):
             if count == 0:
                 count += 1
                 continue
-            if "NoFamily" in line or "NoTEAlignment" in line or "UnmapCover<0.5" in line:
+            if "PASS" not in line:
                 # tldr has not annotated this insert to a repeat family or annotated to less than 50%
                 continue
             row = line.strip().split('\t')

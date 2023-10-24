@@ -264,6 +264,22 @@ rule merge_filter_inserts:
         done
         """
 
+rule normalize_inserts:
+    output:
+        "{sample}/{sample}_normalized.txt"
+    threads: 1
+    params:
+        memory_per_thread="64G",
+        script=srcdir("../scripts/normalize_mice.py"),
+        bam="{sample}/mapped/{sample}.bam",
+        tsv="combined_realign_all/Realigned_classified_filtered.tsv"
+    shell:
+        """
+        python {params.script} --tsv {params.tsv} --bam {params.bam} --sample {wildcards.sample} --parental {config[mef_non_ref_te]} --truth-csv {config[truth_csv]} > {output}
+        """
+
+
+
 #rule summarize_data:
 #    input:
 #        realign_tsv="{sample}/Realigned_classified_filtered_{sample}.tsv",
