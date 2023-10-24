@@ -1,0 +1,68 @@
+chroms:
+  - chr1
+  - chr2
+  - chr3
+  - chr4
+  - chr5
+  - chr6
+  - chr7
+  - chr8
+  - chr9
+  - chr10
+  - chr11
+  - chr12
+  - chr13
+  - chr14
+  - chr15
+  - chr16
+  - chr17
+  - chr18
+  - chr19
+  - chr20
+  - chr21
+  - chr22
+  - chrX
+  - chrY
+
+samples:
+  - miPSC_CTRL_1
+  - miPSC_CTRL_2  
+  - miPSC_CTRL_3
+  - miPSC_CTRL_4
+  - miPSC_CTRL_5
+  - miPSC_CTRL_6
+  - miPSC_LAM_1
+  - miPSC_LAM_2
+  - miPSC_LAM_3
+  - miPSC_LAM_4
+  - miPSC_LAM_5
+  - miPSC_LAM_6
+  - MEF_I222e2
+
+reference:
+  /path/to/ref.fa
+
+xtea_dir:
+  /path/to/xTea/
+
+tldr_dir:
+  /path/to/tldr/
+
+base_dir:
+  /path/to/working/dir
+
+somrit_dir:
+  /path/to/somrit/
+
+repbase:
+  /path/to/somrit/repeats.fa
+
+centromeres:
+  /utils/hg38_centromeres.tsv
+
+telomeres:
+  /utils/hg38_telomeres.tsv
+
+full_sample:
+  sample_name
+
