@@ -100,3 +100,16 @@ We then ran the following script to generate the comparison results
 python scripts/get_hela_metrics.py --tldr TLDR --somrit SOMRIT --line-seq LINE_SEQ --l1mcherry-seq L1MCHERRY_SEQ --mcherry-seq MCHERRY_SEQ --insertions INSERTIONS
 ```
 We used the following in our analysis TLDR is the ```combined/combined.tldr.table.txt``` and SOMRIT the ```combined_realign_all/Realigned_classified_filtered.tsv```. LINE_SEQ is ```utils/mouse_l1.fa```, L1MCHERRY_SEQ is ```utils/L1_EF1alpha-mCherry_spliced.fa```, MCHERRY_SEQ is ```utils/mCherry.fa``` and INSERTIONS is the truth set ```utils/mouse_truth.csv```.
+
+### Detecting novel retrotransposon insertions in treated miPSCs
+
+Gerdes et al also generted 12 Murine induced pluripotent stem cell samples, 6 of which were induced in the presence of a reverse transcriptase inhibitor and 6 that were not. Using these 12 samples and an additionanl parental sample to act as a control we ran somrit and tldr using the rules described below to identify novel insertion events and generate a rate per sample using the Effective Bases normalization approach. As with the analysis of L1-mCherry insertions above each read set was places in a sample specific subfolder of the form "sample/fastq/sample.fastq.gz".
+
+We used the ```mice_project_config.yaml``` file and ran the following snakemake rules: 
+
+```
+snakemake -s mice_test.smk --configfile mice_project_config.yaml all
+snakemake -s mice_test.smk --configfile mice_project_config.yaml all_normalized
+```
+
+This generated a file within each sample's sub-directory "sample/sample_normalized.txt" which contained the normalized rates. 
